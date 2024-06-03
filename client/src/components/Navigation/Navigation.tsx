@@ -6,7 +6,7 @@ interface Props {
 
 export default function Navigation({ children }: Props) {
   return (
-    <span className="hidden sm:inline text-sm font-bold hover:bg-secondary hover:text-background cursor-pointer p-2 rounded-full">
+    <span className="hidden sm:inline text-sm font-bold hover:bg-fontColor hover:text-background cursor-pointer p-2 rounded-full">
       {children}
     </span>
   );
