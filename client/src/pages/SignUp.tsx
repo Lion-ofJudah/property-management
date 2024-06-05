@@ -4,7 +4,6 @@ import InputHeader from "../components/InputHeader";
 import PasswordInput from "../components/PasswordInput";
 import RippleButton from "../components/RippleButton";
 import React, { useState } from "react";
-import Home from "./Home";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -63,7 +62,7 @@ export default function SignUp() {
         <PasswordInput onChange={handleChange} id="password" />
         <RippleButton
           disabled={loading}
-          className="w-full my-3 py-4 px-4 rounded-full bg-primary text-white text-lg mb-4"
+          className="w-full my-3 py-4 px-4 rounded-full bg-primary text-background text-lg mb-4"
         >
           {loading ? "Signing up..." : "Sign up"}
         </RippleButton>
