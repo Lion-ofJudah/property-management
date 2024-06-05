@@ -29,6 +29,15 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+userSchema.methods.createAuthToken = function () {
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_PRIVATE_KEY);
+  return token;
+};
+
 const User = mongoose.model("User", userSchema);
 
 export default User;
