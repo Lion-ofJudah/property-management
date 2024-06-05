@@ -1,7 +1,12 @@
 import { useState } from "react";
 import style from "./PasswordInput.module.css";
 
-export default function PasswordInput() {
+interface Props {
+  onChange: (event: any) => void;
+  id: string;
+}
+
+export default function PasswordInput({ onChange, id }: Props) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -13,6 +18,8 @@ export default function PasswordInput() {
           "w-full h-full bg-transparent outline-none border-hidden",
           { style },
         ].join(" ")}
+        onChange={onChange}
+        id={id}
       />
       <span
         className="cursor-pointer transition-opacity hover:opacity-70"

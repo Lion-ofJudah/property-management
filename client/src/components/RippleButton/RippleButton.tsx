@@ -5,9 +5,15 @@ interface Props {
   children: ReactNode;
   onClick?: (event: FormEvent) => void;
   className?: String;
+  disabled?: boolean;
 }
 
-export default function RippleButton({ children, onClick, className }: Props) {
+export default function RippleButton({
+  children,
+  onClick,
+  className,
+  disabled,
+}: Props) {
   const handleClick = (event: MouseEvent) => {
     let x = event.clientX - (event.target as HTMLElement).offsetLeft;
     let y = event.clientY - (event.target as HTMLElement).offsetTop;
@@ -25,6 +31,7 @@ export default function RippleButton({ children, onClick, className }: Props) {
 
   return (
     <button
+      disabled={disabled || false}
       className={[style.button, className || ""].join(" ")}
       onClick={(event) => {
         handleClick(event);
