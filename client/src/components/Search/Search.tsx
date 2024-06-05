@@ -24,7 +24,7 @@ export default function Search() {
           </svg>
         </span>
       </div>
-      <button className="py-2.5 pr-4 pl-2.5 cursor-pointer text-background bg-accent rounded-r-full border border-accent">
+      <button className="py-2.5 pr-4 pl-2.5 cursor-pointer text-background bg-primary rounded-r-full border border-accent">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

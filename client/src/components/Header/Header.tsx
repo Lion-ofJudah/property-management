@@ -8,7 +8,7 @@ import Message from "../Message";
 
 export default function Header() {
   return (
-    <header className="flex p-3 shadow-md bg-background justify-between items-center w-screen">
+    <header className="flex p-3 shadow-md fixed bg-background justify-between items-center w-screen h-20">
       <Link to={"/"}>
         <Logo />
       </Link>
