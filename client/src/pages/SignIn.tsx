@@ -1,17 +1,23 @@
 import React from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../features/user/userSlice";
 import InputHeader from "../components/InputHeader";
 import InputField from "../components/InputField";
 import PasswordInput from "../components/PasswordInput";
 import RippleButton from "../components/RippleButton";
-import { useState } from "react";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { loading, error } = useSelector((state: any) => state.user);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (event: any) => {
     setFormData({
@@ -23,7 +29,7 @@ export default function SignIn() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
+    dispatch(signInStart());
     const res = await fetch("/api/auth/signin", {
       method: "POST",
       headers: {
@@ -34,15 +40,11 @@ export default function SignIn() {
 
     const data = await res.json();
     if (data.success === false) {
-      setLoading(false);
-      setError(data.message);
+      dispatch(signInFailure(data.message));
     } else {
       navigate("/");
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(data));
     }
-
-    console.log(data);
   };
 
   return (
