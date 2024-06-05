@@ -1,6 +1,5 @@
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
-import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
   const { userName, email, password } = req.body;
@@ -33,13 +32,16 @@ export const signin = async (req, res) => {
 
   const token = user.createAuthToken();
 
-  res.status(201).json({
-    status: true,
-    user: {
-      name: user.name,
-      email: user.email,
-      id: user._id,
-      token,
-    },
-  });
+  res
+    .cookie("access_token", token, { httpOnly: true })
+    .status(200)
+    .json({
+      status: true,
+      user: {
+        name: user.name,
+        email: user.email,
+        id: user._id,
+        token,
+      },
+    });
 };
