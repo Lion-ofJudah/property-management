@@ -1,12 +1,15 @@
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Logo from "../Logo";
 import Navigation from "../Navigation";
 import Search from "../Search";
-import { Link } from "react-router-dom";
 import User from "../User";
 import Notification from "../Notification";
 import Message from "../Message";
 
 export default function Header() {
+  const { currentUser } = useSelector((state: any) => state.user);
+  console.log(currentUser);
   return (
     <header className="flex p-3 shadow-md fixed bg-background justify-between items-center w-screen h-20">
       <Link to={"/"}>
@@ -25,9 +28,15 @@ export default function Header() {
         <Notification></Notification>
         <Message></Message>
       </div>
-      <Link to={"/sign-in"}>
-        <User></User>
-      </Link>
+      {currentUser ? (
+        <Link to={"/profile"}>
+          <User currentUser={currentUser.user}></User>
+        </Link>
+      ) : (
+        <Link to={"/sign-in"}>
+          <User currentUser={null}></User>
+        </Link>
+      )}
     </header>
   );
 }

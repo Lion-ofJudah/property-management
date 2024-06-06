@@ -32,16 +32,10 @@ export const signin = async (req, res) => {
 
   const token = user.createAuthToken();
 
-  res
-    .cookie("access_token", token, { httpOnly: true })
-    .status(200)
-    .json({
-      status: true,
-      user: {
-        name: user.name,
-        email: user.email,
-        id: user._id,
-        token,
-      },
-    });
+  const { password: pass, ...others } = user._doc;
+
+  res.cookie("access_token", token, { httpOnly: true }).status(200).json({
+    status: true,
+    user: others,
+  });
 };
