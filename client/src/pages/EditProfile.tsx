@@ -6,7 +6,6 @@ import {
 } from "firebase/storage";
 import { useEffect, useRef, useState } from "react";
 import { app } from "../firebase";
-import { average } from "firebase/firestore";
 
 interface Props {
   currentUser: any;
@@ -111,7 +110,7 @@ export default function EditProfile({ currentUser }: Props) {
             />
           </div>
         </div>
-        <div className="flex fixed bottom-0 p-5 gap-8 border-t-2 w-full items-center justify-center">
+        <div className="flex fixed bottom-0 p-5 gap-8 border-t-2 w-full items-center justify-center bg-background">
           <a
             href=""
             className="border py-2 px-3 rounded-full font-semibold text-fontColor"
