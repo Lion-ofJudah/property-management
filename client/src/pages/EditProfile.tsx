@@ -1,9 +1,58 @@
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { useEffect, useRef, useState } from "react";
+import { app } from "../firebase";
+import { average } from "firebase/firestore";
+
 interface Props {
   currentUser: any;
 }
 
 export default function EditProfile({ currentUser }: Props) {
   const hasAvatar = currentUser.avatar && currentUser.avatar.trim() !== "";
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState(undefined);
+  const [fileUploadPercent, setFileUploadPercent] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
+  const [formData, setFormData] = useState({
+    userName: currentUser.userName,
+    avatar: currentUser.avatar,
+  });
+
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+
+  const handleFileUpload = (file: File) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setFileUploadPercent(Math.round(progress));
+      },
+      (error) => {
+        setFileUploadError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, avatar: downloadURL });
+        });
+      }
+    );
+  };
+
   return (
     <div>
       <div className="bg-background w-2/3 lg:w-1/3 ml-40 mt-6">
@@ -18,6 +67,15 @@ export default function EditProfile({ currentUser }: Props) {
           <div className="mt-10">
             <p className="text-xs cursor-pointer">Photo</p>
             <div className="mt-1 flex items-center gap-4">
+              <input
+                type="file"
+                ref={fileRef}
+                hidden
+                accept="image/*"
+                onChange={(event: any) => {
+                  setFile(event.target.files[0]);
+                }}
+              />
               {hasAvatar ? (
                 <img
                   src={currentUser.avatar}
@@ -31,12 +89,16 @@ export default function EditProfile({ currentUser }: Props) {
                   </span>
                 </div>
               )}
-              <a
-                href=""
-                className="border text-fontColor py-2 px-3 font-medium bg-secondary hover:bg-accent hover:text-background rounded-full"
+              <div
+                className="cursor-pointer border text-fontColor py-2 px-3 font-medium bg-secondary hover:bg-accent hover:text-background rounded-full"
+                onClick={() => {
+                  if (fileRef.current) {
+                    fileRef.current.click();
+                  }
+                }}
               >
                 Change
-              </a>
+              </div>
             </div>
           </div>
           <div className="mt-10">
