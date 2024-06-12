@@ -22,11 +22,19 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    price: {
+    regularPrice: {
+      type: Number,
+      required: true,
+    },
+    discountPrice: {
       type: Number,
       required: true,
     },
     parking: {
+      type: Boolean,
+      required: true,
+    },
+    furnished: {
       type: Boolean,
       required: true,
     },
