@@ -27,12 +27,20 @@ export default function Profile({ currentUser }: Props) {
       <p className="text-3xl text-fontColor font-bold mt-3">
         {currentUser.userName}
       </p>
-      <Link
-        to={"/edit-profile"}
-        className="rounded-full border p-2 text-fontColor bg-secondary hover:text-background hover:bg-accent mt-7"
-      >
-        <p className="font-semibold">Edit profile</p>
-      </Link>
+      <div className="flex gap-3">
+        <Link
+          to={"/create-listing"}
+          className="rounded-full border p-2 text-fontColor bg-secondary hover:text-background hover:bg-accent mt-7"
+        >
+          <span className="font-semibold">Add property</span>
+        </Link>
+        <Link
+          to={"/edit-profile"}
+          className="rounded-full border p-2 text-fontColor bg-secondary hover:text-background hover:bg-accent mt-7"
+        >
+          <span className="font-semibold">Edit profile</span>
+        </Link>
+      </div>
       <div className="flex gap-10 mt-20 font-semibold text-sm text-fontColor">
         <p>Owned</p>
         <p>Rented</p>
