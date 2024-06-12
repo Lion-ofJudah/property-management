@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   getStorage,
   ref,
@@ -8,6 +8,7 @@ import {
 import { app } from "../firebase";
 import Checkbox from "../components/Checkbox";
 import RippleButton from "../components/RippleButton";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   currentUser: any;
@@ -17,17 +18,64 @@ export default function CreateListing({ currentUser }: Props) {
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     imageUrls: [],
+    title: "",
+    description: "",
+    address: "",
+    bedrooms: 1,
+    bathrooms: 1,
+    regularPrice: 0,
+    discountPrice: 0,
+    type: "rent",
+    offer: false,
+    parking: false,
+    furnished: false,
+    userRef: currentUser._id,
   });
   const [uploading, setUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState({
     status: false,
     message: "",
   });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   console.log(formData);
 
-  const handleChange = (event: any) => {
+  const handleImageInputChange = (event: any) => {
     setFiles(event.target.files);
+  };
+
+  const handleChange = (event: any) => {
+    if (event.target.id === "sell" || event.target.id === "rent") {
+      setFormData({
+        ...formData,
+        type: event.target.id,
+      });
+    }
+
+    if (
+      event.target.id === "parking" ||
+      event.target.id === "furnished" ||
+      event.target.id === "offer"
+    ) {
+      setFormData({
+        ...formData,
+        [event.target.id]: event.target.checked,
+      });
+    }
+
+    if (
+      event.target.type === "number" ||
+      event.target.type === "text" ||
+      event.target.type === "textarea"
+    ) {
+      setFormData({
+        ...formData,
+        [event.target.id]: event.target.value,
+      });
+    }
   };
 
   const handleFileUpload = async (file: File) => {
@@ -105,12 +153,50 @@ export default function CreateListing({ currentUser }: Props) {
     });
   };
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      if (formData.imageUrls.length < 1) {
+        setError("At least one image must be uploaded!");
+        setLoading(false);
+        return;
+      }
+
+      if (+formData.regularPrice < +formData.discountPrice) {
+        setError("Discount price must be lower than regular price!");
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch("/api/listing/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (data.success === false) {
+        setError(data.message);
+      }
+      navigate(`/listing/${data._id}`);
+      setError(null);
+    } catch (error: any) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col -mt-20 px-4 max-w-4xl mx-auto box-border h-[calc(100vh-80px)] bg-background">
       <h1 className="text-3xl font-semibold text-center mt-32">
         Create your property
       </h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-10 md:flex-row mt-10">
           <div className="flex flex-col gap-4 flex-1">
             <input
@@ -120,6 +206,8 @@ export default function CreateListing({ currentUser }: Props) {
               id="title"
               maxLength={62}
               minLength={10}
+              onChange={handleChange}
+              value={formData.title}
               required
             />
             <textarea
@@ -127,6 +215,8 @@ export default function CreateListing({ currentUser }: Props) {
               className="border py-2 px-3 w-full rounded-xl focus:border-none focus:outline-secondary"
               id="description"
               required
+              onChange={handleChange}
+              value={formData.description}
             />
             <input
               type="text"
@@ -134,13 +224,45 @@ export default function CreateListing({ currentUser }: Props) {
               className="border py-2 px-3 w-full rounded-xl focus:border-none focus:outline-secondary"
               id="address"
               required
+              onChange={handleChange}
+              value={formData.address}
             />
             <div className="flex flex-wrap justify-between mt-6">
-              <Checkbox id="sell">Sell</Checkbox>
-              <Checkbox id="rent">Rent</Checkbox>
-              <Checkbox id="parking">Parking Slot</Checkbox>
-              <Checkbox id="furnished">Furnished</Checkbox>
-              <Checkbox id="offer">Offer</Checkbox>
+              <Checkbox
+                id="sell"
+                onChange={handleChange}
+                checked={formData.type === "sell"}
+              >
+                Sell
+              </Checkbox>
+              <Checkbox
+                id="rent"
+                onChange={handleChange}
+                checked={formData.type === "rent"}
+              >
+                Rent
+              </Checkbox>
+              <Checkbox
+                id="parking"
+                onChange={handleChange}
+                checked={formData.parking}
+              >
+                Parking Slot
+              </Checkbox>
+              <Checkbox
+                id="furnished"
+                onChange={handleChange}
+                checked={formData.furnished}
+              >
+                Furnished
+              </Checkbox>
+              <Checkbox
+                id="offer"
+                onChange={handleChange}
+                checked={formData.offer}
+              >
+                Offer
+              </Checkbox>
             </div>
             <div className="flex gap-5 sm:gap-20 mt-6">
               <div className="flex gap-2 items-center">
@@ -149,6 +271,8 @@ export default function CreateListing({ currentUser }: Props) {
                   id="bedroom"
                   min="0"
                   required
+                  onChange={handleChange}
+                  value={formData.bedrooms}
                   className="px-3 py-2 border w-14 sm:w-28 rounded-xl focus:border-none focus:outline-secondary"
                 />
                 <span>Bedrooms</span>
@@ -159,6 +283,8 @@ export default function CreateListing({ currentUser }: Props) {
                   id="bathroom"
                   min="0"
                   required
+                  onChange={handleChange}
+                  value={formData.bathrooms}
                   className="px-3 py-2 border w-14 sm:w-28 rounded-xl focus:border-none focus:outline-secondary"
                 />
                 <span>Bathrooms</span>
@@ -171,26 +297,36 @@ export default function CreateListing({ currentUser }: Props) {
                   id="regularPrice"
                   min="0"
                   required
+                  onChange={handleChange}
+                  value={formData.regularPrice}
                   className="px-3 py-2 border w-28 rounded-xl focus:border-none focus:outline-secondary"
                 />
                 <div className="flex flex-col justify-center items-center">
                   <p>Regular price</p>
-                  <span className="text-xs">(birr/month)</span>
+                  {formData.type === "rent" && (
+                    <span className="text-xs">(birr/month)</span>
+                  )}
                 </div>
               </div>
-              <div className="flex flex-gap-2 items-center gap-3">
-                <input
-                  type="number"
-                  id="discountPrice"
-                  min="0"
-                  required
-                  className="px-3 py-2 border w-28 rounded-xl focus:border-none focus:outline-secondary"
-                />
-                <div className="flex flex-col justify-center items-center">
-                  <p>Discounted price</p>
-                  <span className="text-xs">(birr/month)</span>
+              {formData.offer && (
+                <div className="flex flex-gap-2 items-center gap-3">
+                  <input
+                    type="number"
+                    id="discountPrice"
+                    min="0"
+                    required
+                    onChange={handleChange}
+                    value={formData.discountPrice}
+                    className="px-3 py-2 border w-28 rounded-xl focus:border-none focus:outline-secondary"
+                  />
+                  <div className="flex flex-col justify-center items-center">
+                    <p>Discounted price</p>
+                    {formData.type === "rent" && (
+                      <span className="text-xs">(birr/month)</span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
           <div className="flex flex-col flex-1 mt-6 sm:mt-0">
@@ -208,13 +344,17 @@ export default function CreateListing({ currentUser }: Props) {
                   accept="image/*"
                   multiple
                   className="hidden"
-                  onChange={handleChange}
+                  onChange={handleImageInputChange}
                 />
                 <label
                   htmlFor="images"
                   className="border border-gray-200 p-2 rounded-2xl cursor-pointer bg-accent text-background text-center w-full block"
                 >
-                  Choose Files
+                  {files.length > 0
+                    ? files.length > 1
+                      ? `${files.length} files selected`
+                      : `${files.length} file selected`
+                    : "Choose Files"}
                 </label>
               </div>
               <button
@@ -265,9 +405,13 @@ export default function CreateListing({ currentUser }: Props) {
               })}
           </div>
         </div>
-        <RippleButton className="p-3 bg-primary rounded-2xl text-background mt-10 w-full text-xl">
-          Create Property
+        <RippleButton
+          disabled={loading || uploading}
+          className="p-3 bg-primary rounded-2xl text-background mt-10 w-full text-xl"
+        >
+          {loading ? "Creating Property" : "Create Property"}
         </RippleButton>
+        {error && <p className="text-red-700 mt-3 text-center">{error}</p>}
       </form>
     </div>
   );
