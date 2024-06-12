@@ -6,6 +6,10 @@ const initialState = {
   loading: false,
 };
 
+const normalizeUser = (user: any) => {
+  return user.user ? user.user : user;
+};
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -14,7 +18,7 @@ const userSlice = createSlice({
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-      state.currentUser = action.payload;
+      state.currentUser = normalizeUser(action.payload);
       state.loading = false;
       state.error = null;
     },
@@ -22,8 +26,27 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    updateUserStart: (state) => {
+      state.loading = true;
+    },
+    updateUserSuccess: (state, action) => {
+      state.currentUser = normalizeUser(action.payload);
+      state.loading = false;
+      state.error = null;
+    },
+    updateUserFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
-export const { signInStart, signInSuccess, signInFailure } = userSlice.actions;
+export const {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} = userSlice.actions;
 export default userSlice.reducer;
