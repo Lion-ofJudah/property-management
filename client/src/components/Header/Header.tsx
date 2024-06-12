@@ -15,7 +15,7 @@ export default function Header() {
       <Link to={"/"}>
         <Logo />
       </Link>
-      <div className="flex gap-3 items-center">
+      <div className="hidden sm:flex gap-3 items-center">
         <Link to={"/"}>
           <Navigation>Home</Navigation>
         </Link>
@@ -30,7 +30,7 @@ export default function Header() {
       </div>
       {currentUser ? (
         <Link to={"/profile"}>
-          <User currentUser={currentUser.user}></User>
+          <User currentUser={currentUser}></User>
         </Link>
       ) : (
         <Link to={"/sign-in"}>

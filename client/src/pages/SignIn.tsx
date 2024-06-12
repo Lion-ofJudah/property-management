@@ -25,7 +25,7 @@ export default function SignIn() {
       [event.target.id]: event.target.value,
     });
   };
-  console.log(formData);
+  // console.log(formData);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -65,7 +65,7 @@ export default function SignIn() {
           disabled={loading}
           className="w-full my-3 py-4 px-4 rounded-full bg-primary text-background text-lg mb-4"
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Logging in" : "Login"}
         </RippleButton>
       </form>
       <div className="text-center text-gray-500">

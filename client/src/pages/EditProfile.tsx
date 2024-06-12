@@ -4,16 +4,23 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { app } from "../firebase";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../features/user/userSlice";
 
 interface Props {
   currentUser: any;
 }
 
 export default function EditProfile({ currentUser }: Props) {
-  const hasAvatar = currentUser.avatar && currentUser.avatar.trim() !== "";
+  const dispatch = useDispatch();
   const fileRef = useRef<HTMLInputElement>(null);
+  const hasAvatar = currentUser.avatar && currentUser.avatar.trim() !== "";
   const [file, setFile] = useState(undefined);
   const [fileUploadPercent, setFileUploadPercent] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
@@ -21,6 +28,10 @@ export default function EditProfile({ currentUser }: Props) {
     userName: currentUser.userName,
     avatar: currentUser.avatar,
   });
+
+  console.log("current user", currentUser);
+  // console.log(fileUploadPercent);
+  // console.log(fileUploadError);
 
   useEffect(() => {
     if (file) {
@@ -52,17 +63,49 @@ export default function EditProfile({ currentUser }: Props) {
     );
   };
 
+  const handleChange = (event: any) => {
+    setFormData({
+      ...formData,
+      [event.target.id]: event.target.value,
+    });
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    dispatch(updateUserStart());
+    console.log("id", currentUser._id);
+    try {
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+      } else {
+        dispatch(updateUserSuccess(data));
+      }
+    } catch (error: any) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  console.log(formData);
+
   return (
     <div>
-      <div className="bg-background w-2/3 lg:w-1/3 ml-40 mt-6">
+      <div className="bg-background w-2/3 lg:w-1/3 mx-auto sm:ml-40 mt-6">
         <h2 className="text-3xl font-semibold text-fontColor">Edit profile</h2>
         <p className="text-md text-fontColor mt-2 text-justify">
           Change your profile information over here. Information you add here is
           visible to anyone who can view your profile.
         </p>
       </div>
-      <form>
-        <div className="bg-background w-2/3 lg:w-1/3 ml-40 mt-6">
+      <form onSubmit={handleSubmit}>
+        <div className="bg-background w-2/3 lg:w-1/3 mx-auto sm:ml-40 mt-6">
           <div className="mt-10">
             <p className="text-xs cursor-pointer">Photo</p>
             <div className="mt-1 flex items-center gap-4">
@@ -77,10 +120,16 @@ export default function EditProfile({ currentUser }: Props) {
               />
               {hasAvatar ? (
                 <img
-                  src={currentUser.avatar}
+                  src={formData.avatar || currentUser.avatar}
                   alt="Profile picture"
                   className="rounded-full object-cover size-16 border"
                 />
+              ) : formData.avatar ? (
+                <img
+                  src={formData.avatar}
+                  alt="Profile picture"
+                  className="rounded-full object-cover size-16 border"
+                ></img>
               ) : (
                 <div className="bg-gradient-to-br from-primary to-secondary flex items-center justify-center size-16 rounded-full cursor-pointer">
                   <span className="text-background font-bold text-3xl">
@@ -106,6 +155,8 @@ export default function EditProfile({ currentUser }: Props) {
               type="text"
               placeholder="User name"
               id="userName"
+              defaultValue={currentUser.userName}
+              onChange={handleChange}
               className="border py-2 px-3 w-full rounded-xl focus:border-none focus:outline-secondary"
             />
           </div>
@@ -117,12 +168,9 @@ export default function EditProfile({ currentUser }: Props) {
           >
             Reset
           </a>
-          <a
-            href=""
-            className="border py-2 px-3 rounded-full font-semibold text-fontColor"
-          >
+          <button className="border py-2 px-3 rounded-full font-semibold text-fontColor">
             Save
-          </a>
+          </button>
         </div>
       </form>
     </div>

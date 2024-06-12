@@ -6,7 +6,6 @@ export const test = (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  // console.log(req.body);
   console.log(req.user._id);
   console.log(req.params.id);
   if (req.user._id !== req.params.id) {
@@ -23,6 +22,6 @@ export const updateUser = async (req, res) => {
     },
     { new: true }
   );
-  const { password: pass, ...rest } = updateUser._doc;
+  const { password: pass, ...rest } = updatedUser._doc;
   res.status(200).send(rest);
 };

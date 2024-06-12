@@ -23,11 +23,15 @@ export default function App() {
           <Route element={<ProtectRoute />}>
             <Route
               path="/profile"
-              element={<Profile currentUser={currentUser.user} />}
+              element={
+                <Profile currentUser={currentUser ? currentUser : null} />
+              }
             />
             <Route
               path="/edit-profile"
-              element={<EditProfile currentUser={currentUser.user} />}
+              element={
+                <EditProfile currentUser={currentUser ? currentUser : null} />
+              }
             />
           </Route>
         </Routes>
