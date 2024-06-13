@@ -37,6 +37,29 @@ export default function Profile({ currentUser }: Props) {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+
+      setUserListings((pervious) =>
+        pervious.filter((listing: any) => listing._id !== id)
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center pt-5">
       <div>
@@ -141,7 +164,11 @@ export default function Profile({ currentUser }: Props) {
                         />
                       </svg>
                     </span>
-                    <span>
+                    <span
+                      onClick={() => {
+                        handleDelete(listing._id);
+                      }}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
