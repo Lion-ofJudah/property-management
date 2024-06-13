@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Logo from "../Logo";
 import Navigation from "../Navigation";
@@ -9,7 +9,7 @@ import Message from "../Message";
 
 export default function Header() {
   const { currentUser } = useSelector((state: any) => state.user);
-  console.log(currentUser);
+
   return (
     <header className="flex p-3 shadow-md fixed bg-background justify-between items-center w-screen h-20">
       <Link to={"/"}>
@@ -17,10 +17,10 @@ export default function Header() {
       </Link>
       <div className="hidden sm:flex gap-3 items-center">
         <Link to={"/"}>
-          <Navigation>Home</Navigation>
+          <Navigation path="/">Home</Navigation>
         </Link>
         <Link to={"/about"}>
-          <Navigation>About</Navigation>
+          <Navigation path="/about">About</Navigation>
         </Link>
       </div>
       <Search />
@@ -30,11 +30,11 @@ export default function Header() {
       </div>
       {currentUser ? (
         <Link to={"/profile"}>
-          <User currentUser={currentUser}></User>
+          <User path="/profile" currentUser={currentUser}></User>
         </Link>
       ) : (
         <Link to={"/sign-in"}>
-          <User currentUser={null}></User>
+          <User path="/sign-in" currentUser={null}></User>
         </Link>
       )}
     </header>

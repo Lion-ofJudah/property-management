@@ -13,9 +13,8 @@ export const verifyToken = (req, res, next) => {
       return errorHandler(res, 401, "Unauthorized user!");
     }
 
-    console.log(user);
-
     req.user = user;
+
     next();
   });
 };

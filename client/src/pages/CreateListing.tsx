@@ -268,7 +268,7 @@ export default function CreateListing({ currentUser }: Props) {
               <div className="flex gap-2 items-center">
                 <input
                   type="number"
-                  id="bedroom"
+                  id="bedrooms"
                   min="0"
                   required
                   onChange={handleChange}
@@ -280,7 +280,7 @@ export default function CreateListing({ currentUser }: Props) {
               <div className="flex items-center gap-2">
                 <input
                   type="number"
-                  id="bathroom"
+                  id="bathrooms"
                   min="0"
                   required
                   onChange={handleChange}
