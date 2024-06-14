@@ -9,6 +9,7 @@ import About from "./pages/About";
 import EditProfile from "./pages/EditProfile";
 import ProtectRoute from "./components/ProtectRoute";
 import CreateListing from "./pages/CreateListing";
+import EditListing from "./pages/EditLIsting";
 
 export default function App() {
   const { currentUser } = useSelector((select: any) => select.user);
@@ -37,6 +38,10 @@ export default function App() {
             <Route
               path="/create-listing"
               element={<CreateListing currentUser={currentUser} />}
+            />
+            <Route
+              path="/update-listing/:listingId"
+              element={<EditListing currentUser={currentUser} />}
             />
           </Route>
         </Routes>
