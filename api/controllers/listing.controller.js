@@ -43,7 +43,7 @@ export const updateListing = async (req, res) => {
         regularPrice: req.body.regularPrice,
         discountPrice: req.body.discountPrice,
         type: req.body.type,
-        imageUrls: imageUrls.push(req.body.imageUrls),
+        imageUrls: req.body.imageUrls,
         bedrooms: req.body.bedrooms,
         bathrooms: req.body.bathrooms,
         parking: req.body.parking,
@@ -54,4 +54,13 @@ export const updateListing = async (req, res) => {
   );
 
   res.status(200).json(updatedListing);
+};
+
+export const getListing = async (req, res) => {
+  const listing = await Listing.findById(req.params.id);
+  if (!listing) {
+    return errorHandler(res, 404, "Property not found!");
+  }
+
+  res.status(200).json(listing);
 };
