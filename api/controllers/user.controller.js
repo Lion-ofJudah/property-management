@@ -36,3 +36,15 @@ export const getUserListing = async (req, res) => {
     errorHandler(res, 400, "Invalid user!");
   }
 };
+
+export const getUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return errorHandler(res, 404, "User not found!");
+  }
+
+  const { password: pass, email, ...others } = user._doc;
+
+  res.status(200).json(others);
+};
