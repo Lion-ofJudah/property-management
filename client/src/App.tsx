@@ -10,6 +10,7 @@ import EditProfile from "./pages/EditProfile";
 import ProtectRoute from "./components/ProtectRoute";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditLIsting";
+import ShowListing from "./pages/ShowListing";
 
 export default function App() {
   const { currentUser } = useSelector((select: any) => select.user);
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/listings/:listingId" element={<ShowListing />} />
           <Route element={<ProtectRoute />}>
             <Route
               path="/profile"

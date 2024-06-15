@@ -1,7 +1,7 @@
 export default function Search() {
   return (
     <form className="flex items-center w-2/5 sm:w-3/5">
-      <div className="flex justify-between items-center border border-gray-300 bg-slate-100 py-2.5 pl-6 pr-3 rounded-l-full w-full">
+      <div className="flex justify-between items-center border border-gray-300 bg-slate-100 py-2.5 pl-6 pr-3 rounded-l-full w-full focus-within:border-secondary focus-within:border-2">
         <input
           type="text"
           placeholder="Search"

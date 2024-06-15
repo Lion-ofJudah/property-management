@@ -228,7 +228,7 @@ export default function EditListing({ currentUser }: Props) {
       if (!data.success) {
         setError(data.message);
       } else {
-        navigate(`/listing/${data._id}`);
+        navigate(`/listings/${data._id}`);
         setError(null);
       }
     } catch (error: any) {

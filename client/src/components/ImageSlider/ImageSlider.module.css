@@ -1,0 +1,53 @@
+.mainContainer {
+  height: 100%;
+  /* position: relative; */
+  border-radius: 10px;
+}
+
+.slideStyle {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-position: center;
+  background-size: cover;
+}
+
+.arrowStyle {
+  position: absolute;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #000;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.leftArrowStyle {
+  left: 1%;
+}
+
+.rightArrowStyle {
+  right: 1%;
+}
+
+.dotContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Uncomment the properties below to put the dots inside the picture */
+
+  /* position: absolute;
+    top: 95%;
+    transform: translateY(-50%); */
+}
+
+.dotStyle {
+  color: #787878;
+  cursor: pointer;
+  transition: font-size 0.15s ease;
+}
