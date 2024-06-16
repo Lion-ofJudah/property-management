@@ -83,10 +83,6 @@ export const getListing = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return errorHandler(res, 400, "Invalid property ID format!");
-    }
-
     const listing = await Listing.findById(id);
 
     if (!listing) {
