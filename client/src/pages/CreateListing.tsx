@@ -197,7 +197,7 @@ export default function CreateListing({ currentUser }: Props) {
       if (data.success === false) {
         setError(data.message);
       } else {
-        navigate(`/listing/${data._id}`);
+        navigate(`/listings/${data._id}`);
       }
     } catch (error: any) {
       setError(error.message);

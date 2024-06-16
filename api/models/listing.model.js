@@ -22,6 +22,10 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    offer: {
+      type: Boolean,
+      required: true,
+    },
     regularPrice: {
       type: Number,
       required: true,

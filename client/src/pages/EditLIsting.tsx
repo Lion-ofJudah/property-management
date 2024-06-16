@@ -73,6 +73,8 @@ export default function EditListing({ currentUser }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  console.log(formData);
+
   const navigate = useNavigate();
   const params = useParams<{ listingId: string }>();
 
@@ -84,6 +86,7 @@ export default function EditListing({ currentUser }: Props) {
       });
 
       const data: Listing = await res.json();
+      console.log("data", data);
 
       if (!data) {
         console.log("Failed to fetch listing");
@@ -225,12 +228,13 @@ export default function EditListing({ currentUser }: Props) {
       const data = await res.json();
       setLoading(false);
 
-      if (!data.success) {
+      if (data.success === false) {
         setError(data.message);
-      } else {
-        navigate(`/listings/${data._id}`);
-        setError(null);
+        return;
       }
+
+      navigate(`/listings/${data._id}`);
+      setError(null);
     } catch (error: any) {
       setError(error.message);
       setLoading(false);
