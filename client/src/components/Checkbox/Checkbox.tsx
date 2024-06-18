@@ -16,7 +16,7 @@ export default function Checkbox({ children, id, onChange, checked }: Props) {
           checked={checked || false}
           onChange={onChange}
         />
-        <span className="size-6 appearance-none border border-gray-300 rounded-md peer-checked:bg-secondary peer-checked:after:content-['✓'] peer-checked:after:text-fontColor peer-checked:after:font-bold peer-checked:after:flex peer-checked:after:items-center peer-checked:after:justify-center peer-checked:after:w-full peer-checked:after:h-full"></span>
+        <span className="size-6 cursor-pointer appearance-none border border-gray-300 rounded-md peer-checked:bg-secondary peer-checked:after:content-['✓'] peer-checked:after:text-fontColor peer-checked:after:font-bold peer-checked:after:flex peer-checked:after:items-center peer-checked:after:justify-center peer-checked:after:w-full peer-checked:after:h-full"></span>
       </label>
       <span>{children}</span>
     </div>

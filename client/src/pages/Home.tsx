@@ -1,8 +1,82 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Filter from "../components/Filter";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [isFilterVisible, setFilterVisible] = useState(false);
+
+  const [searchParams, setSearchParams] = useState({
+    type: "all",
+    parking: false,
+    furnished: false,
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
+
+  console.log(listings);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const typeFromUrl = urlParams.get("type");
+    const parkingFromUrl = urlParams.get("parking");
+    const furnishedFromUrl = urlParams.get("furnished");
+
+    if (typeFromUrl || parkingFromUrl || furnishedFromUrl) {
+      setSearchParams({
+        type: typeFromUrl || "all",
+        parking: parkingFromUrl === "true",
+        furnished: furnishedFromUrl === "true",
+      });
+    }
+
+    const fetchListings = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/api/listing/get?${searchQuery}`, {
+        method: "GET",
+      });
+      const data = await res.json();
+      setListings(data);
+      setLoading(false);
+    };
+
+    fetchListings();
+  }, [location.search]);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("type", searchParams.type);
+    urlParams.set("parking", searchParams.parking.toString());
+    urlParams.set("furnished", searchParams.furnished.toString());
+
+    const searchQuery = urlParams.toString();
+    navigate(`/?${searchQuery}`);
+
+    setFilterVisible(!isFilterVisible);
+  };
+
+  const handleClick = (key: "all" | "sell" | "rent") => {
+    setSearchParams({
+      ...searchParams,
+      type: key,
+    });
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, checked } = event.target;
+
+    if (id === "parking" || id === "furnished") {
+      setSearchParams({
+        ...searchParams,
+        [id]: checked,
+      });
+    }
+  };
 
   const handleFilterClick = () => {
     setFilterVisible(!isFilterVisible);
@@ -35,6 +109,11 @@ export default function Home() {
             onClick={() => {
               setFilterVisible(!isFilterVisible);
             }}
+            handleSubmit={handleSubmit}
+            searchParams={searchParams}
+            handleClick={handleClick}
+            handleChange={handleChange}
+            setSearchParams={setSearchParams}
           />
         </div>
       )}

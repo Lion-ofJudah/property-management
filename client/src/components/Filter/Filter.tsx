@@ -1,49 +1,34 @@
-import { useState } from "react";
+import React from "react";
 import Checkbox from "../Checkbox";
 
 interface Props {
   onClick: () => void;
+  handleSubmit: (event: React.FormEvent) => void;
+  searchParams: { type: string; parking: boolean; furnished: boolean };
+  handleClick: (key: "all" | "sell" | "rent") => void;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  setSearchParams: any;
 }
 
-export default function Filter({ onClick }: Props) {
-  const [checked, setChecked] = useState({
-    any: true,
-    sell: false,
-    rent: false,
-  });
-
-  const handleClick = (key: "any" | "sell" | "rent") => {
-    if (key === "any") {
-      setChecked({
-        any: true,
-        sell: false,
-        rent: false,
-      });
-    } else if (key === "sell") {
-      setChecked({
-        any: false,
-        sell: true,
-        rent: false,
-      });
-    } else if (key === "rent") {
-      setChecked({
-        any: false,
-        sell: false,
-        rent: true,
-      });
-    }
-  };
+export default function Filter({
+  onClick,
+  handleSubmit,
+  searchParams,
+  handleChange,
+  handleClick,
+  setSearchParams,
+}: Props) {
   return (
     <div className="border w-full sm:w-2/3 flex flex-col justify-center items-center sm:rounded-3xl bg-background py-20">
-      <div className="relative w-full -top-16" onClick={onClick}>
-        <div className="flex px-4 items-center">
+      <div className="relative w-full -top-16">
+        <div className="flex px-4 items-center" onClick={onClick}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-6  cursor-pointer"
+            className="size-6 cursor-pointer"
           >
             <path
               strokeLinecap="round"
@@ -55,7 +40,7 @@ export default function Filter({ onClick }: Props) {
         </div>
         <span className="absolute top-12 border-b border-gray-300 w-full px-4"></span>
       </div>
-      <form className="w-full">
+      <form onSubmit={handleSubmit} className="w-full">
         <div className="flex flex-col justify-start w-full px-8">
           <p className="font-semibold text-2xl">Type of property</p>
           <p className="text-gray-500">
@@ -64,18 +49,17 @@ export default function Filter({ onClick }: Props) {
           <div className="flex items-center justify-center mt-6 text-center text-xl">
             <input
               type="checkbox"
-              id="checkbox-any"
+              id="all"
               className="hidden"
-              checked={checked.any}
+              checked={searchParams.type === "all"}
+              onChange={() => handleClick("all")}
               readOnly
             />
             <span
               id="span-any"
-              onClick={() => {
-                handleClick("any");
-              }}
+              onClick={() => handleClick("all")}
               className={`border cursor-pointer hover:border-fontColor py-4 rounded-s-2xl w-1/3 ${
-                checked.any
+                searchParams.type === "all"
                   ? "bg-fontColor text-background border-fontColor"
                   : ""
               }`}
@@ -84,18 +68,17 @@ export default function Filter({ onClick }: Props) {
             </span>
             <input
               type="checkbox"
-              id="checkbox-sell"
+              id="sell"
               className="hidden"
-              checked={checked.sell}
+              checked={searchParams.type === "sell"}
+              onChange={() => handleClick("sell")}
               readOnly
             />
             <span
               id="span-sell"
-              onClick={() => {
-                handleClick("sell");
-              }}
+              onClick={() => handleClick("sell")}
               className={`border cursor-pointer hover:border-fontColor py-4 w-1/3 ${
-                checked.sell
+                searchParams.type === "sell"
                   ? "bg-fontColor text-background border-fontColor"
                   : ""
               }`}
@@ -104,18 +87,17 @@ export default function Filter({ onClick }: Props) {
             </span>
             <input
               type="checkbox"
-              id="checkbox-rent"
+              id="rent"
               className="hidden"
-              checked={checked.rent}
+              checked={searchParams.type === "rent"}
+              onChange={() => handleClick("rent")}
               readOnly
             />
             <span
               id="span-rent"
-              onClick={() => {
-                handleClick("rent");
-              }}
+              onClick={() => handleClick("rent")}
               className={`border cursor-pointer hover:border-fontColor py-4 rounded-e-2xl w-1/3 ${
-                checked.rent
+                searchParams.type === "rent"
                   ? "bg-fontColor text-background border-fontColor"
                   : ""
               }`}
@@ -129,23 +111,40 @@ export default function Filter({ onClick }: Props) {
           <p className="font-semibold text-2xl">Amenities</p>
           <p className="text-gray-500">Essentials</p>
           <div className="mt-6 text-center">
-            <Checkbox id="parking" onChange={(event) => {}}>
+            <Checkbox
+              id="parking"
+              onChange={handleChange}
+              checked={searchParams.parking}
+            >
               Parking
             </Checkbox>
-            <Checkbox id="furnished" onChange={(event) => {}}>
+            <Checkbox
+              id="furnished"
+              onChange={handleChange}
+              checked={searchParams.furnished}
+            >
               Furnished
             </Checkbox>
           </div>
         </div>
-        <div
-          className="relative w-full top-16 border-t border-gray-300 px-8 pt-4"
-          onClick={onClick}
-        >
+        <div className="relative w-full top-16 border-t border-gray-300 px-8 pt-4">
           <div className="flex gap-20 justify-around w-full text-center">
-            <span className="w-1/2 cursor-pointer border py-4 rounded-3xl hover:border-fontColor text-xl">
+            <span
+              className="w-1/2 cursor-pointer border py-4 rounded-3xl hover:border-fontColor text-xl"
+              onClick={() =>
+                setSearchParams({
+                  type: "all",
+                  parking: false,
+                  furnished: false,
+                })
+              }
+            >
               Clear all
             </span>
-            <button className="w-1/2 cursor-pointer border py-4 rounded-3xl hover:border-fontColor text-xl">
+            <button
+              type="submit"
+              className="w-1/2 cursor-pointer border py-4 rounded-3xl hover:border-fontColor text-xl"
+            >
               Search
             </button>
           </div>
