@@ -58,6 +58,8 @@ export default function CreateListing({ currentUser }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  console.log(formData);
+
   const navigate = useNavigate();
 
   const handleImageInputChange = (event: ChangeEvent<HTMLInputElement>) => {

@@ -19,7 +19,7 @@ export default function Filter({
   setSearchParams,
 }: Props) {
   return (
-    <div className="border w-full sm:w-2/3 flex flex-col justify-center items-center sm:rounded-3xl bg-background py-20">
+    <div className="border w-full sm:w-2/3 flex flex-col z-20 justify-center items-center sm:rounded-3xl bg-background py-20">
       <div className="relative w-full -top-16">
         <div className="flex px-4 items-center" onClick={onClick}>
           <svg

@@ -31,7 +31,7 @@ export default function Header() {
   }, [location.search]);
 
   return (
-    <header className="flex p-3 shadow-md fixed bg-background justify-between items-center w-screen h-20">
+    <header className="flex p-3 shadow-md fixed bg-background justify-between items-center w-screen h-20 z-10">
       <Link to={"/"}>
         <Logo />
       </Link>
